@@ -14,7 +14,7 @@
     self = [super init];
     if (self) {
         // this overrides the player's init method
-        _currentSquare = 0;
+        _currentSquare = 0; // only use _ within init
         _gameOver = NO;
         _gameLogic = @{
                                     // ladders
@@ -38,29 +38,51 @@
 }
 
 -(void)roll {
-    _diceNumber = 1 + arc4random_uniform(6);
-    _currentSquare += _diceNumber;
+    self.diceNumber = 1 + arc4random_uniform(6);
+    self.currentSquare += self.diceNumber;
 
-    NSNumber *current = @(_currentSquare);
+    NSNumber *current = @(self.currentSquare);
     
-    if ([current isEqualToValue:@100]) {
-        NSLog(@"game is over");
-        [self gameOver];
+    NSNumber *newSq = [[NSNumber alloc] init];
+    
+    NSLog(@"you rolled a %ld",self.diceNumber);
+
+    
+    if ([self.gameLogic objectForKey:current] != nil) {
+        // set current space to equal new space
+        newSq = [self.gameLogic objectForKey:current];
+        self.currentSquare = [newSq intValue];
         
-    } else if ([_gameLogic objectForKey:current] != nil) {
-        current = [_gameLogic objectForKey:current];
+        if (newSq > current) {
+            if ([newSq intValue] >= 100) {
+                [self gameOver];
+            } else {
+                NSLog(@"Congrats you landed on a ladder. Your new square is %@",newSq); }
+        } else {
+            NSLog(@"Oops ya landed on a snake. Down ya go to %@",newSq);
+        }
+        
+        
+    } else {
+        // set old space to still equal current space
+        if ([newSq intValue] >= 100) {
+            [self gameOver];
+        } else {
+            
+        newSq = current;
+        NSLog(@"You landed on square %ld",self.currentSquare);
+        }
+    }
     
-        // set current position to value for key
-    } else
-        current = current; // set equal to its current position
-
-    NSLog(@"you rolled a %ld\n your new position is %@",_diceNumber,current);
     
     return;
 }
 
+
+
+
 -(BOOL)gameOver {
-    
+    NSLog(@"game over mate!!");
     return YES;
 }
 
