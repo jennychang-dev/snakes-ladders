@@ -65,7 +65,7 @@
         
     } else {
         // set old space to still equal current space
-        if ([newSq intValue] >= 100) {
+        if (self.currentSquare >= 100) {
             [self gameOver];
         } else {
             
@@ -77,8 +77,6 @@
     
     return;
 }
-
-
 
 
 -(BOOL)gameOver {
